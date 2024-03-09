@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    #container {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-rows: 1fr auto;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .block {
+      border: 1px solid black;
+    }
+
+    #leftBlock {
+      background-color: lightgray;
+      transition: width 0.5s;
+    }
+
+    #topBlock, #bottomBlock {
+      background-color: lightblue;
+      overflow: hidden;
+    }
+
+    #resizeHandle {
+      cursor: ns-resize;
+      width: 100%;
+      height: 100px;
+      background-color: black;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Toggle left block
+      $("#leftBlock").click(function() {
+        $(this).toggleClass("hidden");
+      });
+
+      // Resize top and bottom blocks
+      let isResizing = false;
+
+      $("#resizeHandle").mousedown(function() {
+        isResizing = true;
+      });
+
+      $(document).mouseup(function() {
+        isResizing = false;
+      });
+
+      $(document).mousemove(function(e) {
+        if (isResizing) {
+          const mouseY = e.clientY;
+          const windowHeight = $(window).height();
+          const minHeight = 100;
+
+          const topHeight = Math.max(minHeight, mouseY);
+          const bottomHeight = Math.max(minHeight, windowHeight - mouseY);
+
+          $("#topBlock").height(topHeight);
+          $("#bottomBlock").height(bottomHeight);
+        }
+      });
+    });
+  </script>
+  <title>Resizable Blocks</title>
+</head>
+<body>
+
+  <div id="container">
+    <div class="block" id="leftBlock"></div>
+    <div class="block" id="topBlock"></div>
+    <div class="block" id="bottomBlock"></div>
+    <div id="resizeHandle"></div>
+  </div>
+
+</body>
+</html>
