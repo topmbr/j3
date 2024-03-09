@@ -3,147 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript Tasks</title>
+    <title>Follow Cursor</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        img {
+            position: absolute;
+        }
+    </style>
 </head>
 <body>
+    <img src="image.jpg" alt="Animal Image" id="animal">
 
-<script>
-    // 1. Сума чисел у заданому діапазоні
-    let rangeSum = prompt("Введіть діапазон (наприклад, 1-10):");
-    let [start, end] = rangeSum.split('-').map(Number);
-    let sum = 0;
-    for (let i = start; i <= end; i++) {
-        sum += i;
-    }
-    alert(`Сума чисел у діапазоні ${start}-${end}: ${sum}`);
+    <script>
+        $(document).ready(function() {
+            const animal = $('#animal');
 
-    // 2. Найбільший спільний дільник
-    let num1 = prompt("Введіть перше число:");
-    let num2 = prompt("Введіть друге число:");
-    alert(`Найбільший спільний дільник: ${gcd(num1, num2)}`);
+            $(document).on('mousemove', function(event) {
+                const x = event.pageX - animal.width() / 2;
+                const y = event.pageY - animal.height() / 2;
 
-    // 3. Дільники числа
-    let number = prompt("Введіть число:");
-    let divisors = findDivisors(number);
-    alert(`Дільники числа ${number}: ${divisors.join(', ')}`);
+                // Обмежуємо рух тварини за межами екрана
+                const maxX = $(document).width() - animal.width();
+                const maxY = $(document).height() - animal.height();
 
-    // 4. Кількість цифр у числі
-    let numberDigits = prompt("Введіть число:");
-    alert(`Кількість цифр у числі ${numberDigits}: ${countDigits(numberDigits)}`);
+                const adjustedX = Math.max(0, Math.min(x, maxX));
+                const adjustedY = Math.max(0, Math.min(y, maxY));
 
-    // 5. Статистика введених чисел
-    let inputNumbers = prompt("Введіть 10 чисел через кому:");
-    let statistics = countStatistics(inputNumbers.split(',').map(Number));
-    alert(`Статистика: ${statistics}`);
-
-    // 6. Зациклений калькулятор
-    let continueCalculation = true;
-    while (continueCalculation) {
-        let operand1 = prompt("Введіть перше число:");
-        let operator = prompt("Введіть операцію (+, -, *, /):");
-        let operand2 = prompt("Введіть друге число:");
-        let result = calculate(operand1, operator, operand2);
-        alert(`Результат: ${result}`);
-        continueCalculation = confirm("Хочете вирішити ще один приклад?");
-    }
-
-    // 7. Сдвиг цифр числа
-    let shiftNumber = prompt("Введіть число:");
-    let shiftCount = prompt("Введіть кількість цифр для зсуву:");
-    let shiftedNumber = shiftDigits(shiftNumber, shiftCount);
-    alert(`Результат зсуву: ${shiftedNumber}`);
-
-    // 8. Зациклений вивід днів тижня
-    let daysOfWeek = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'Пятниця', 'Субота', 'Неділя'];
-    let showNextDay = true;
-    let currentDayIndex = 0;
-    while (showNextDay) {
-        alert(`${daysOfWeek[currentDayIndex]}. Хочете побачити наступний день?`);
-        showNextDay = confirm("Натисніть OK, щоб продовжити.");
-        currentDayIndex = (currentDayIndex + 1) % 7;
-    }
-
-    // 9. Таблиця множення
-    for (let i = 2; i <= 9; i++) {
-        for (let j = 1; j <= 10; j++) {
-            console.log(`${i} * ${j} = ${i * j}`);
-        }
-    }
-
-    // 10. Гра "Угадай число"
-    let lowerBound = 0;
-    let upperBound = 100;
-    let guessed = false;
-    while (!guessed) {
-        let guess = Math.floor((lowerBound + upperBound) / 2);
-        let userResponse = prompt(`Ваше число > ${guess}, < ${guess} або == ${guess}?`);
-        if (userResponse === ">") {
-            lowerBound = guess + 1;
-        } else if (userResponse === "<") {
-            upperBound = guess - 1;
-        } else if (userResponse === "==") {
-            guessed = true;
-            alert(`Ваше число: ${guess}`);
-        } else {
-            alert("Будь ласка, введіть >, < або ==.");
-        }
-    }
-
-    function gcd(a, b) {
-        return b === 0 ? a : gcd(b, a % b);
-    }
-
-    function findDivisors(num) {
-        let divisors = [];
-        for (let i = 1; i <= num; i++) {
-            if (num % i === 0) {
-                divisors.push(i);
-            }
-        }
-        return divisors;
-    }
-
-    function countDigits(num) {
-        return num.toString().length;
-    }
-
-    function countStatistics(numbers) {
-        let positive = 0, negative = 0, zeros = 0, evens = 0, odds = 0;
-        for (let i = 0; i < numbers.length; i++) {
-            if (numbers[i] > 0) positive++;
-            else if (numbers[i] < 0) negative++;
-            else zeros++;
-
-            if (numbers[i] % 2 === 0) evens++;
-            else odds++;
-        }
-        return `Положит.: ${positive}, Від'ємн.: ${negative}, Нулів: ${zeros}, Парних: ${evens}, Непарних: ${odds}`;
-    }
-
-    function calculate(operand1, operator, operand2) {
-        operand1 = parseFloat(operand1);
-        operand2 = parseFloat(operand2);
-
-        switch (operator) {
-            case '+':
-                return operand1 + operand2;
-            case '-':
-                return operand1 - operand2;
-            case '*':
-                return operand1 * operand2;
-            case '/':
-                return operand2 !== 0 ? operand1 / operand2 : "Ділення на нуль!";
-            default:
-                return "Невірний оператор!";
-        }
-    }
-
-    function shiftDigits(number, count) {
-        let numStr = number.toString();
-        let shiftedStr = numStr.slice(count) + numStr.slice(0, count);
-        return parseInt(shiftedStr);
-    }
-</script>
-
+                animal.css({
+                    left: adjustedX + 'px',
+                    top: adjustedY + 'px'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
